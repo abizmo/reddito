@@ -76,7 +76,6 @@ export function show(req, res) {
 
 // Creates a new Link in the DB
 export function create(req, res) {
-  console.log(req.body);
   return Link.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
@@ -87,6 +86,8 @@ export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
+  console.log(req.params.id);
+  console.log(req.body);
   return Link.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))

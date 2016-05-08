@@ -18,12 +18,23 @@ header#banner.hero-unit
           th Title
           th URL
           th
+          th
         tbody
           tr(ng-repeat='link in $ctrl.links')
-            td {{ link.title }}
-            td 
-              a(href='{{ link.url }}') {{ link.url }}
-            td(ng-show="$ctrl.getCurrentUser()._id == '{{ link.user }}'")
+            td
+              div(ng-hide="$ctrl.isEditable[link._id]") {{ link.title }}
+              div(ng-show="$ctrl.isEditable[link._id]")
+                input(type="text" ng-model="link.title")
+            td
+              div(ng-hide="$ctrl.isEditable[link._id]") {{ link.url }}
+              div(ng-show="$ctrl.isEditable[link._id]")
+                input(type="text" ng-model="link.url")
+            td
+              button.btn.btn-primary(type='button', ng-hide="$ctrl.getCurrentUser()._id != '{{ link.user }}' || $ctrl.isEditable[link._id]", ng-click='$ctrl.editLink(link)') Edit
+              button.btn.btn-warning(type='button', ng-show="$ctrl.getCurrentUser()._id == '{{ link.user }}' && $ctrl.isEditable[link._id]", ng-click='$ctrl.editLink(link)') Cancel
+            td(ng-show="$ctrl.getCurrentUser()._id == '{{ link.user }}' && $ctrl.isEditable[link._id]")
+              button.btn.btn-success(type='button', ng-click='$ctrl.updateLink(link)') Update
+            td(ng-show="$ctrl.getCurrentUser()._id == '{{ link.user }}' && !$ctrl.isEditable[link._id]")
               button.btn.btn-danger(type='button', ng-click='$ctrl.deleteLink(link)') Delete
 
   

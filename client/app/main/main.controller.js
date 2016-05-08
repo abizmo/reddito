@@ -11,6 +11,7 @@ class MainController {
     this.isAdmin = Auth.isAdmin;
     this.getCurrentUser = Auth.getCurrentUser;
     this.links = [];
+    this.isEditable = {};
 
     $scope.$on('$destroy', function() {
       socket.unsyncUpdates('link');
@@ -20,8 +21,15 @@ class MainController {
   $onInit() {
     this.$http.get('/api/links').then(response => {
       this.links = response.data;
+      for (var i = 0, length = this.links.length; i < length; i++) {
+        this.isEditable[this.links[i]._id] = false;
+      }
       this.socket.syncUpdates('link', this.links);
     });
+  }
+
+  editLink(link){
+    this.isEditable[link._id] = !this.isEditable[link._id];
   }
 
   addLink() {
@@ -33,6 +41,11 @@ class MainController {
 
   deleteLink(link) {
     this.$http.delete('/api/links/' + link._id);
+  }
+
+  updateLink(link) {
+    this.$http.put('/api/links/' + link._id, { title: link.title, url: link.url, user: link.user });
+    this.isEditable[link._id] = false;
   }
 }
 
