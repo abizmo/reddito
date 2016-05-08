@@ -1,22 +1,29 @@
 header#banner.hero-unit
   .container
-    h1 'Allo, 'Allo!
-    p.lead Kick-start your next web app with Angular Fullstack
-    img(src='assets/images/yeoman.png', alt='I\'m Yeoman')
+    h1 Welcome to reddito
+    p.lead One link to rule them all
 
 .container
+  form(name='linkForm', ng-show='$ctrl.isLoggedIn()')
+    .form-group
+      input.form-control(type='text', placeholder='Title:', ng-model='$ctrl.newLink.title', requiered)
+    .form-group
+      input.form-control(type='text', placeholder='URL:', ng-model='$ctrl.newLink.url',required)
+    button.btn.btn-primary(type='submit', ng-click='$ctrl.addLink()', ng-disabled='linkForm.$invalid') Add New
   .row
     .col-lg-12
-      h1.page-header Features:
-      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='thing in $ctrl.awesomeThings')
-        li
-          a(href='#', uib-tooltip='{{thing.info}}')
-            | {{thing.name}}
-            button.close(type='button', ng-click='$ctrl.deleteThing(thing)') &times;
+      h1.page-header Listing links
+      table.table.table-stripped
+        thead
+          th Title
+          th URL
+          th
+        tbody
+          tr(ng-repeat='link in $ctrl.links')
+            td {{ link.title }}
+            td 
+              a(href='{{ link.url }}') {{ link.url }}
+            td(ng-show="$ctrl.getCurrentUser()._id == '{{ link.user }}'")
+              button.btn.btn-danger(type='button', ng-click='$ctrl.deleteLink(link)') Delete
 
-  form.thing-form
-    label Syncs in realtime across clients
-    p.input-group
-      input.form-control(type='text', placeholder='Add a new thing here.', ng-model='$ctrl.newThing')
-      span.input-group-btn
-        button.btn.btn-primary(type='submit', ng-click='$ctrl.addThing()') Add New
+  

@@ -4,32 +4,35 @@
 
 class MainController {
 
-  constructor($http, $scope, socket) {
+  constructor($http, $scope, socket, Auth) {
     this.$http = $http;
     this.socket = socket;
-    this.awesomeThings = [];
+    this.isLoggedIn = Auth.isLoggedIn;
+    this.isAdmin = Auth.isAdmin;
+    this.getCurrentUser = Auth.getCurrentUser;
+    this.links = [];
 
     $scope.$on('$destroy', function() {
-      socket.unsyncUpdates('thing');
+      socket.unsyncUpdates('link');
     });
   }
 
   $onInit() {
-    this.$http.get('/api/things').then(response => {
-      this.awesomeThings = response.data;
-      this.socket.syncUpdates('thing', this.awesomeThings);
+    this.$http.get('/api/links').then(response => {
+      this.links = response.data;
+      this.socket.syncUpdates('link', this.links);
     });
   }
 
-  addThing() {
-    if (this.newThing) {
-      this.$http.post('/api/things', { name: this.newThing });
-      this.newThing = '';
+  addLink() {
+    if (this.newLink) {
+      this.$http.post('/api/links', { title: this.newLink.title, url: this.newLink.url, user: this.getCurrentUser()._id });
+      this.newLink = '';
     }
   }
 
-  deleteThing(thing) {
-    this.$http.delete('/api/things/' + thing._id);
+  deleteLink(link) {
+    this.$http.delete('/api/links/' + link._id);
   }
 }
 
